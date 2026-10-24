@@ -32,3 +32,12 @@
 .example-card{margin:16px 0 4px;padding:15px 17px;border-left:4px solid #16b58e;background:#effaf5;border-radius:0 10px 10px 0}
 .example-card strong{font-size:11px;letter-spacing:1px;color:#08785e}
 .example-card p{font-size:14px;color:#264c41;margin:7px 0 0;line-height:1.65}
+
+.course-promo{background:#10283b;color:#fff;border-radius:20px;padding:clamp(24px,5vw,48px);display:grid;grid-template-columns:1.3fr .7fr;gap:30px;align-items:center}
+.course-promo h2{color:white}
+.course-promo p{color:#bed0dc;line-height:1.7;max-width:570px;margin-bottom:25px}
+.course-promo .kicker{color:#70e7c0}
+.course-promo-art{background:#19384b;border:1px solid #36576b;border-radius:15px;padding:20px}
+.course-promo-art svg{display:block;width:100%}
+.course-promo-art small{color:#a9c5d1}
+@media(max-width:700px){.course-promo{grid-template-columns:1fr}}
