@@ -32,6 +32,30 @@ const pts=[[60,178],[100,155],[140,169],[180,120],[220,133],[260,95],[300,119],[
 frame.append(svg);section.append(frame,node("p","visual-caption","Educational illustration using invented example data — not a live market chart."));
 return section
 }
-function openLesson(l){$("dialogCategory").textContent=l.category;$("dialogTitle").textContent=l.title;$("dialogIntro").textContent=l.intro;const definition=node("p","teacher-definition",l.intro);$("dialogBody").replaceChildren(lessonSection("1. Clear definition",[l.intro]),lessonSection("2. Understand step by step",l.points),lessonSection("3. Practical example",teacherExample(l)),lessonVisual(l),lessonSection("5. Remember this",[l.summary]));$("quizQuestion").textContent=l.question;$("quizOptions").replaceChildren();$("quizFeedback").textContent="";l.options.forEach((option,i)=>{const b=node("button","",option);b.type="button";b.onclick=()=>{$("quizFeedback").textContent=i===l.correct?l.feedback:"Not quite. "+l.feedback};$("quizOptions").append(b)});$("lessonDialog").showModal()}
+function openLesson(l){
+$("dialogCategory").textContent=l.category;
+$("dialogTitle").textContent=l.title;
+$("dialogIntro").textContent="";
+const stages=[
+{title:"Definition",render:()=>lessonSection("What does it mean?",[l.intro])},
+{title:"Step by step",render:()=>lessonSection("Understand it one step at a time",l.points)},
+{title:"Practical example",render:()=>lessonSection("Let's use real numbers",teacherExample(l))},
+{title:"Visual chart",render:()=>lessonVisual(l)},
+{title:"Quick quiz",render:()=>{const wrap=node("section","lesson-quiz-step");wrap.append(node("h3","","Check your understanding"),node("p","",l.question));const options=node("div","quiz-options");const feedback=node("p","quiz-feedback");feedback.setAttribute("role","status");feedback.setAttribute("aria-live","polite");l.options.forEach((option,i)=>{const b=node("button","quiz-answer",option);b.type="button";b.onclick=()=>{feedback.textContent=i===l.correct?l.feedback:"Not quite. "+l.feedback;options.querySelectorAll("button").forEach(btn=>btn.disabled=true)};options.append(b)});wrap.append(options,feedback);return wrap}}
+];
+let index=0;const body=$("dialogBody");const legacyQuiz=document.querySelector("#lessonDialog > .quiz");if(legacyQuiz)legacyQuiz.hidden=true;
+function show(){
+body.replaceChildren();
+const meta=node("div","lesson-progress");
+meta.append(node("span","", "PART "+(index+1)+" OF "+stages.length),node("span","",stages[index].title));
+const track=node("div","progress-track");const fill=node("div","progress-fill");fill.style.width=((index+1)/stages.length*100)+"%";track.append(fill);
+body.append(meta,track,stages[index].render());
+const nav=node("div","lesson-navigation");
+const prev=node("button","lesson-prev","← Previous");prev.type="button";prev.disabled=index===0;prev.onclick=()=>{index--;show()};
+const next=node("button","lesson-next",index===stages.length-1?"Finish lesson ✓":"Next →");next.type="button";next.onclick=()=>{if(index===stages.length-1){$("lessonDialog").close()}else{index++;show()}};
+nav.append(prev,next);body.append(nav);$("lessonDialog").scrollTop=0;
+}
+show();$("lessonDialog").showModal()
+}
 function calc(){const a=Number($("sipAmount").value),y=Number($("sipYears").value),r=Number($("sipRate").value);if(!Number.isFinite(a)||!Number.isFinite(y)||!Number.isFinite(r)||a<=0||a>1e8||y<1||y>60||r< -50||r>50){$("sipResult").textContent="Check inputs";$("sipDetails").textContent="Use valid values within the field limits.";return}const n=Math.round(y*12),m=r/1200;let v=0;for(let i=0;i<n;i++)v=v*(1+m)+a;$("sipResult").textContent=money(v);$("sipDetails").textContent="Invested "+money(a*n)+" · Illustrative gain/loss "+money(v-a*n);const entry=Number($("rrEntry").value),stop=Number($("rrStop").value),target=Number($("rrTarget").value);if(![entry,stop,target].every(Number.isFinite)||entry<=0||stop<=0||target<=0||stop>=entry||target<=entry){$("rrResult").textContent="Check inputs";$("rrDetails").textContent="For a long trade: stop < entry < target.";return}const risk=entry-stop,reward=target-entry;$("rrResult").textContent=(reward/risk).toFixed(2)+":1";$("rrDetails").textContent="Risk "+money(risk)+" / share · Reward "+money(reward)+" / share"}
 renderPaths();renderFilters();renderLessons();renderTerms();$("search").addEventListener("input",()=>{renderLessons();renderTerms()});$("clearSearch").onclick=()=>{$("search").value="";renderLessons();renderTerms();$("search").focus()};["sipAmount","sipYears","sipRate","rrEntry","rrStop","rrTarget"].forEach(id=>$(id).addEventListener("input",calc));$("closeDialog").onclick=()=>$("lessonDialog").close();$("lessonDialog").addEventListener("click",e=>{if(e.target===$("lessonDialog"))$("lessonDialog").close()});$("year").textContent=new Date().getFullYear();calc();
