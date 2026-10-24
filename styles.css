@@ -41,3 +41,32 @@
 .course-promo-art svg{display:block;width:100%}
 .course-promo-art small{color:#a9c5d1}
 @media(max-width:700px){.course-promo{grid-template-columns:1fr}}
+
+/* TotalMarket Academy clean white + deep green design system */
+:root{color:#16392e;background:#fff}
+body{background:#fff;color:#16392e}
+.top,.course-top,footer{background:#073c30!important;border-color:#155544!important}
+.hero{background:linear-gradient(135deg,#074232 0%,#0b513d 65%,#17624b 100%)!important}
+.hero h1 em,.hero .eyebrow,.hero .hero-meta,.course-promo .kicker{color:#a9f2d4!important}
+.navpill{border-color:#72b79a}
+.mark,.btn.primary,.lesson-next{background:#d5f6e6!important;color:#07513c!important}
+.hero-panel{background:#fff!important;color:#123e31!important;border-color:#d7e9de!important;box-shadow:0 24px 60px #002d201e}
+.hero-panel .panel-head,.hero-panel .muted,.hero-panel .chart-foot,.hero-panel .panel-note{color:#5a796c!important}
+.hero-panel .bars{border-color:#c9ded3}
+.hero-panel .bars i{background:linear-gradient(0deg,#0b644b,#5fd4a0)}
+.search-band,.alt{background:#f6faf7!important;border-color:#e4eee8}
+.section-head p,.path p,.lesson p,.tool>p,.term p{color:#637d70}
+.path,.lesson,.tool,.term{border-color:#e0ebe3;box-shadow:0 3px 14px #0b4a2810}
+.path:hover,.lesson:hover{border-color:#4baf83}
+.path-icon,.tool-icon{background:#e7f5ec;color:#096748}
+.kicker,.lesson .tag,.path small,.lesson button{color:#096d4d}
+.filters button.active{background:#0a503b;border-color:#0a503b}
+.result,.example-card,.course-example{background:#ecf8f0}
+.result strong{color:#075c3e}
+.cta,.course-promo{background:#0b4c39!important}
+.course-promo-art{background:#155a45;border-color:#3d8069}
+.visual-frame,.course-chart{background:#103f31!important;border-color:#2b6a52}
+.quiz,.arrow-step{background:#f2f8f3}
+.lesson-navigation .lesson-next{border-color:#b7e8cf}
+dialog{color:#16392e}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
