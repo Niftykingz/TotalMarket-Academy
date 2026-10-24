@@ -28,3 +28,7 @@
 #lessonDialog .teacher-section{border-bottom:0;margin:8px 0}
 #lessonDialog .teacher-section h3{font-size:20px}
 #lessonDialog .arrow-step{padding:16px}
+
+.example-card{margin:16px 0 4px;padding:15px 17px;border-left:4px solid #16b58e;background:#effaf5;border-radius:0 10px 10px 0}
+.example-card strong{font-size:11px;letter-spacing:1px;color:#08785e}
+.example-card p{font-size:14px;color:#264c41;margin:7px 0 0;line-height:1.65}
