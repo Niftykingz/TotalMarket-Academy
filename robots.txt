@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://niftykingz.github.io/TotalMarket-Academy/sitemap.xml
