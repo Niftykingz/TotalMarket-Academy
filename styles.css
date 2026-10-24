@@ -6,3 +6,7 @@
 .arrow-step{display:flex;align-items:flex-start;gap:12px;background:#f5f9fa;border-radius:10px;padding:12px 14px}
 .arrow-number{flex:none;color:#087f68;font-weight:800;font-size:13px;min-width:35px}
 .arrow-step p{margin:0;font-size:14px;line-height:1.65;color:#31495d}
+
+.visual-frame{background:#10263a;border:1px solid #2b4d61;border-radius:14px;padding:14px;overflow:hidden}
+.visual-frame svg{display:block;width:100%;height:auto;max-height:300px}
+.visual-caption{font-size:12px!important;color:#697f91!important;margin:9px 0 0}
