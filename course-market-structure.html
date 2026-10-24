@@ -5,16 +5,42 @@ const lessons=[{"label":"The foundation","title":"What is a market trend?","defi
 const $=id=>document.getElementById(id);let step=0;
 function node(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e}
 function chart(l){
-const ns="http://www.w3.org/2000/svg",svg=document.createElementNS(ns,"svg");svg.setAttribute("viewBox","0 0 680 300");svg.setAttribute("role","img");svg.setAttribute("aria-label","Illustrative swing price chart for "+l.title);
+const ns="http://www.w3.org/2000/svg",svg=document.createElementNS(ns,"svg");svg.setAttribute("viewBox","0 0 760 400");svg.setAttribute("role","img");svg.setAttribute("aria-label","Expanded price swing diagram showing "+l.title);
 const make=(tag,attrs,t)=>{const e=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,String(v)));if(t!==undefined)e.textContent=t;svg.append(e);return e};
-const txt=(x,y,t,c="#d7efdf",size=13)=>make("text",{x,y,fill:c,"font-size":size,"font-family":"system-ui"},t);
-const low=Math.min(...l.prices,...(l.level===null?[]:[l.level]))-5,high=Math.max(...l.prices,...(l.level===null?[]:[l.level]))+5;
-const xx=i=>52+i*62,yy=v=>244-(v-low)/(high-low)*188;
-[55,105,155,205,250].forEach(y=>make("line",{x1:44,y1:y,x2:635,y2:y,stroke:"#356a53"}));
-if(l.level!==null){make("line",{x1:45,y1:yy(l.level),x2:635,y2:yy(l.level),stroke:"#ffd080","stroke-width":2,"stroke-dasharray":"7 6"});txt(50,Math.max(17,yy(l.level)-9),l.levelLabel,"#ffdf9d")}
-make("polyline",{points:l.prices.map((v,i)=>xx(i)+","+yy(v)).join(" "),fill:"none",stroke:"#a0ecc0","stroke-width":4,"stroke-linecap":"round","stroke-linejoin":"round"});
-l.marks.forEach(i=>{make("circle",{cx:xx(i),cy:yy(l.prices[i]),r:7,fill:"#ffd080",stroke:"#0e3f30","stroke-width":2});txt(xx(i)-15,Math.max(16,yy(l.prices[i])-12),"₹"+l.prices[i],"#fff0cb",11)});
-txt(52,280,"Earlier");txt(570,280,"Later →");const fig=node("figure","options-chart");fig.append(svg,node("figcaption","","Illustrative swing-price path with marked turning points. Not a live price chart."));return fig
+const txt=(x,y,t,c="#e5f4ea",size=15,anchor="start")=>make("text",{x,y,fill:c,"font-size":size,"font-family":"system-ui","text-anchor":anchor},t);
+const low=Math.min(...l.prices,...(l.level===null?[]:[l.level])),high=Math.max(...l.prices,...(l.level===null?[]:[l.level]));
+const span=Math.max(12,high-low),bottom=low-span*.12,top=high+span*.12;
+const xx=i=>70+i*(615/(l.prices.length-1)),yy=v=>333-(v-bottom)/(top-bottom)*255;
+[76,140,204,268,332].forEach(y=>make("line",{x1:56,y1:y,x2:710,y2:y,stroke:"#356a53","stroke-width":1}));
+const isFail=l.title.includes("False Breakout"),isBOS=l.title.includes("Break of Structure"),isRetest=l.title.includes("Retest"),isChoch=l.title.includes("Character");
+if(l.level!==null){
+const ly=yy(l.level);
+make("rect",{x:58,y:ly-10,width:650,height:20,fill:"#f4c86e",opacity:".09",rx:4});
+make("line",{x1:58,y1:ly,x2:708,y2:ly,stroke:"#f4ca76","stroke-width":2.4,"stroke-dasharray":"9 7"});
+txt(65,Math.max(25,ly-17),l.levelLabel,"#ffe0a0",14);
+}
+const points=l.prices.map((v,i)=>xx(i)+","+yy(v)).join(" ");
+make("polyline",{points,fill:"none",stroke:"#8ee6b0","stroke-width":5,"stroke-linejoin":"round","stroke-linecap":"round"});
+l.prices.forEach((v,i)=>{if(i===0||i===l.prices.length-1||i>0&&i<l.prices.length-1&&(v>l.prices[i-1]&&v>l.prices[i+1]||v<l.prices[i-1]&&v<l.prices[i+1]))make("circle",{cx:xx(i),cy:yy(v),r:4,fill:"#a8f4c7"})});
+const callout=(i,label,color="#ffe0a0",offset=0)=>{
+const x=xx(i),y=yy(l.prices[i]);
+make("circle",{cx:x,cy:y,r:8,fill:color,stroke:"#103e30","stroke-width":3});
+const ty=y<110?y+34:y-20+offset;
+txt(Math.max(42,Math.min(715,x)),ty,label,color,15,x>615?"end":x<115?"start":"middle");
+};
+if(isBOS){callout(3,"Prior high ₹120");callout(8,"BOS ↑ ₹124","#91f2bb");make("line",{x1:xx(8),y1:yy(l.prices[8])+12,x2:xx(8),y2:yy(l.level)+3,stroke:"#91f2bb","stroke-width":2,"stroke-dasharray":"4 5"})}
+else if(isFail){callout(5,"False break ₹124","#ffb7a3");callout(6,"Back below ₹120","#ffb7a3");callout(9,"Failure ↓","#ffb7a3")}
+else if(isRetest){callout(5,"Breakout ↑","#91f2bb");callout(7,"Retest ₹121","#ffe0a0");callout(9,"Continuation","#91f2bb")}
+else if(isChoch){callout(4,"Higher low ₹112");callout(8,"Break below ₹112","#ffb7a3")}
+else{
+const isDown=l.title.includes("Lower Highs");
+const highs=[],lows=[];
+for(let i=1;i<l.prices.length-1;i++){if(l.prices[i]>l.prices[i-1]&&l.prices[i]>l.prices[i+1])highs.push(i);if(l.prices[i]<l.prices[i-1]&&l.prices[i]<l.prices[i+1])lows.push(i)}
+highs.slice(0,3).forEach((i,j)=>callout(i,(isDown?"LH ":"HH ")+"₹"+l.prices[i],"#a3f1c0"));
+lows.slice(0,3).forEach((i,j)=>callout(i,(isDown?"LL ":"HL ")+"₹"+l.prices[i],"#ffe0a0"));
+}
+txt(66,377,"Earlier");txt(703,377,"Later →","#e5f4ea",15,"end");
+const fig=node("figure","options-chart");fig.append(svg,node("figcaption","","Expanded swing diagram. Gold dashed line = key level; colored dots = structural events. Prices are illustrative, not live."));return fig
 }
 function render(){const l=lessons[step];$("stepNumber").textContent="STEP "+(step+1)+" OF "+lessons.length;$("stepName").textContent=l.label;$("progressFill").style.width=((step+1)/lessons.length*100)+"%";const root=$("content");root.replaceChildren(node("h2","",l.title),node("p","options-definition",l.definition),chart(l));const ex=node("aside","options-example");ex.append(node("strong","","→ PRACTICAL ₹ EXAMPLE"),node("p","",l.example));root.append(ex);l.points.forEach((p,i)=>{const row=node("div","options-point");row.append(node("b","",(i+1)+" →"),node("span","",p));root.append(row)});if(l.quiz){const q=node("section","options-quiz");q.append(node("h3","",l.quiz.question));const feedback=node("p","options-feedback");feedback.setAttribute("role","status");l.quiz.choices.forEach((c,i)=>{const b=node("button","",c);b.type="button";b.onclick=()=>{feedback.textContent=i===l.quiz.correct?l.quiz.why:"Try again. "+l.quiz.why};q.append(b)});q.append(feedback);root.append(q)}$("back").disabled=step===0;$("forward").textContent=step===lessons.length-1?"Restart ↻":"Next →";window.scrollTo({top:0,behavior:"instant"})}
 $("back").onclick=()=>{if(step>0){step--;render()}};$("forward").onclick=()=>{step=(step+1)%lessons.length;render()};render();
