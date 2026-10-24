@@ -10,3 +10,21 @@
 .visual-frame{background:#10263a;border:1px solid #2b4d61;border-radius:14px;padding:14px;overflow:hidden}
 .visual-frame svg{display:block;width:100%;height:auto;max-height:300px}
 .visual-caption{font-size:12px!important;color:#697f91!important;margin:9px 0 0}
+
+/* Focused, paginated lessons */
+.lesson-progress{display:flex;justify-content:space-between;gap:12px;color:#537082;font-size:11px;font-weight:800;letter-spacing:.7px;margin:14px 0 9px}
+.progress-track{height:6px;border-radius:100px;background:#e1ebef;overflow:hidden;margin-bottom:20px}
+.progress-fill{height:100%;background:#13ae87;transition:width .2s}
+.lesson-navigation{display:flex;gap:12px;justify-content:space-between;margin-top:24px}
+.lesson-navigation button{border-radius:10px;padding:13px 18px;font-weight:800;font-size:13px}
+.lesson-prev{background:white;color:#17384a;border:1px solid #c9d8df}
+.lesson-next{background:#16b58e;color:#082e29;border:1px solid #16b58e}
+.lesson-navigation button:disabled{opacity:.35;cursor:not-allowed}
+.lesson-quiz-step{min-height:220px}
+.quiz-options{display:grid;gap:10px}
+.quiz-answer{background:#f5f9fa;border:1px solid #d8e5eb;border-radius:9px;padding:13px;text-align:left}
+.quiz-answer:disabled{opacity:.8}
+.quiz-feedback{font-weight:700;color:#08795f}
+#lessonDialog .teacher-section{border-bottom:0;margin:8px 0}
+#lessonDialog .teacher-section h3{font-size:20px}
+#lessonDialog .arrow-step{padding:16px}
