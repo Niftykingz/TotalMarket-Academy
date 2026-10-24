@@ -32,16 +32,27 @@ const pts=[[60,178],[100,155],[140,169],[180,120],[220,133],[260,95],[300,119],[
 frame.append(svg);section.append(frame,node("p","visual-caption","Educational illustration using invented example data — not a live market chart."));
 return section
 }
+function exampleCard(l,stage){
+const items=teacherExample(l);
+const wrap=node("aside","example-card");
+wrap.append(node("strong","","↗ EXAMPLE"));
+const chosen=stage===0?items[0]:stage===1?(items[1]||items[0]):stage===3?(items[items.length-1]||items[0]):stage===4?(items[0]):items.join(" ");
+wrap.append(node("p","",chosen));
+return wrap
+}
+function withExample(l,stage,content){
+const wrap=node("div","teaching-screen");wrap.append(content,exampleCard(l,stage));return wrap
+}
 function openLesson(l){
 $("dialogCategory").textContent=l.category;
 $("dialogTitle").textContent=l.title;
 $("dialogIntro").textContent="";
 const stages=[
-{title:"Definition",render:()=>lessonSection("What does it mean?",[l.intro])},
-{title:"Step by step",render:()=>lessonSection("Understand it one step at a time",l.points)},
+{title:"Definition",render:()=>withExample(l,0,lessonSection("What does it mean?",[l.intro]))},
+{title:"Step by step",render:()=>withExample(l,1,lessonSection("Understand it one step at a time",l.points))},
 {title:"Practical example",render:()=>lessonSection("Let's use real numbers",teacherExample(l))},
-{title:"Visual chart",render:()=>lessonVisual(l)},
-{title:"Quick quiz",render:()=>{const wrap=node("section","lesson-quiz-step");wrap.append(node("h3","","Check your understanding"),node("p","",l.question));const options=node("div","quiz-options");const feedback=node("p","quiz-feedback");feedback.setAttribute("role","status");feedback.setAttribute("aria-live","polite");l.options.forEach((option,i)=>{const b=node("button","quiz-answer",option);b.type="button";b.onclick=()=>{feedback.textContent=i===l.correct?l.feedback:"Not quite. "+l.feedback;options.querySelectorAll("button").forEach(btn=>btn.disabled=true)};options.append(b)});wrap.append(options,feedback);return wrap}}
+{title:"Visual chart",render:()=>withExample(l,3,lessonVisual(l))},
+{title:"Quick quiz",render:()=>{const wrap=node("section","lesson-quiz-step");wrap.append(node("h3","","Check your understanding"),node("p","",l.question));const options=node("div","quiz-options");const feedback=node("p","quiz-feedback");feedback.setAttribute("role","status");feedback.setAttribute("aria-live","polite");l.options.forEach((option,i)=>{const b=node("button","quiz-answer",option);b.type="button";b.onclick=()=>{feedback.textContent=i===l.correct?l.feedback:"Not quite. "+l.feedback;options.querySelectorAll("button").forEach(btn=>btn.disabled=true)};options.append(b)});wrap.append(options,feedback,exampleCard(l,4));return wrap}}
 ];
 let index=0;const body=$("dialogBody");const legacyQuiz=document.querySelector("#lessonDialog > .quiz");if(legacyQuiz)legacyQuiz.hidden=true;
 function show(){
